@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ProfileService } from './profile.service';
-import { ProfileController } from './profile.controller';
 import { PrismaService } from 'src/libs/prisma.service';
+import { JwtStrategy } from '../auth/jwt.strategy';
+import { ProfileController } from './profile.controller';
+import { ProfileService } from './profile.service';
 
 @Module({
-  controllers: [ProfileController],
-  providers: [ProfileService, PrismaService],
-  exports: [ProfileService]
+    controllers: [ProfileController],
+    providers: [ProfileService, PrismaService, JwtStrategy],
+    exports: [ProfileService],
 })
-export class ProfileModule { }
+export class ProfileModule {}

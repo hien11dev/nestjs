@@ -1,15 +1,20 @@
-import { User } from "@prisma/client";
+import { User as UserModel } from '@prisma/client';
 
 declare global {
     namespace Express {
-        interface Request {
-            user?: User
-        }
+        // eslint-disable-next-line @typescript-eslint/no-empty-interface
+        interface User extends UserModel {}
     }
 }
 
-export interface PaginateMeta {
-    page: number,
-    limit: number,
-    total: number
+export interface JwtPayload {
+    id: number;
+    email: string;
+    createdAt: number;
 }
+
+export interface VerifyEmailJobData {
+    email: string;
+}
+
+export type ForgotPasswordJobData = VerifyEmailJobData;

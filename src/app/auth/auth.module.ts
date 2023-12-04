@@ -1,34 +1,34 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { PrismaService } from 'src/libs/prisma.service';
-import { BcryptService } from 'src/libs/bcrypt.service';
 import { BullModule } from '@nestjs/bull';
-import { ForgotPasswordProcessor } from './forgot-password.processor';
-import { VerifyEmailProcessor } from './verify-email.processor';
+import { Module } from '@nestjs/common';
+import { BcryptService } from 'src/libs/bcrypt.service';
 import { IsUniqueConstraint } from 'src/libs/class-validator/is-unique';
+import { PrismaService } from 'src/libs/prisma.service';
 import { ProfileModule } from '../profile/profile.module';
 import { ProfileService } from '../profile/profile.service';
+import { AuthController } from './auth.controller';
+import { AuthProcessor } from './auth.processor';
+import { AuthService } from './auth.service';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  controllers: [AuthController],
-  providers: [
-    PrismaService,
-    BcryptService,
-    AuthService,
-    ForgotPasswordProcessor,
-    VerifyEmailProcessor,
-    IsUniqueConstraint,
-    ProfileService
-  ],
-  imports: [
-    BullModule.registerQueue({
-      name: 'forgot-password',
-    }),
-    BullModule.registerQueue({
-      name: 'verify-email',
-    }),
-    ProfileModule
-  ]
+    controllers: [AuthController],
+    providers: [
+        PrismaService,
+        BcryptService,
+        AuthService,
+        AuthProcessor,
+        IsUniqueConstraint,
+        ProfileService,
+        JwtStrategy,
+    ],
+    imports: [
+        BullModule.registerQueue({
+            name: 'auth',
+            defaultJobOptions: {
+                removeOnComplete: true,
+            },
+        }),
+        ProfileModule,
+    ],
 })
-export class AuthModule { }
+export class AuthModule {}

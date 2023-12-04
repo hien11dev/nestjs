@@ -1,19 +1,4 @@
-import { Category } from "@prisma/client";
-import { PaginateMeta } from "src/types";
+import { EntityPaginate } from '@/utils/length-paginate';
+import { Category } from '@prisma/client';
 
-export class CategoryPaginate {
-    data: Category[];
-    meta: PaginateMeta;
-}
-
-
-export function categoryPaginateResponse(data: Category[], page: number, limit: number, total: number): CategoryPaginate {
-    return {
-        data,
-        meta: {
-            page,
-            limit,
-            total
-        }
-    }
-}
+export class CategoryPaginate extends EntityPaginate<Category> {}

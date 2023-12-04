@@ -1,8 +1,7 @@
-import { IsNotEmpty, Matches } from "class-validator";
-import { ForgotPasswordDto } from "./forgot-password.dto";
+import { IsNotEmpty, Matches } from 'class-validator';
 
-export class VerifyEmailDto extends ForgotPasswordDto {
+export class VerifyEmailDto {
     @IsNotEmpty()
-    @Matches(/[0-9]{6}/)
+    @Matches(/\d{6}/)
     code: string;
 }

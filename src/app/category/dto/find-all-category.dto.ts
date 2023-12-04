@@ -1,21 +1,10 @@
+import { BaseQueryPaginate } from '@/utils/length-paginate';
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class FindAllCategoryDto {
+export class FindAllCategoryDto extends BaseQueryPaginate {
     @IsOptional()
     @IsString()
     @Transform(({ value }) => value?.trim())
     name: string;
-
-    @IsOptional()
-    @Transform(({ value }) => +value)
-    @IsInt()
-    @Min(1)
-    page: number;
-
-    @IsOptional()
-    @Transform(({ value }) => +value)
-    @IsInt()
-    @Min(1)
-    limit: number;
 }

@@ -17,8 +17,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "types": [
-      "./src/types.d.ts"
-    ]
+    "types": ["./src/types.d.ts"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

@@ -6,82 +6,84 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./database.sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  name            String
-  avatar          String
-  email           String    @unique
-  emailVerifiedAt DateTime?
-  password        String
-  active          Boolean
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  posts           Post[]
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(100)
+  avatar            String    @db.VarChar(250)
+  email             String    @unique @db.VarChar(250)
+  email_verified_at DateTime?
+  password          String    @db.VarChar(80)
+  active            Boolean
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  posts             Post[]
 
   @@map("users")
 }
 
 model PasswordReset {
-  email     String   @id
-  token     String
-  createdAt DateTime @default(now())
+  email      String   @id
+  token      String   @db.VarChar(100)
+  created_at DateTime @default(now())
 
   @@map("password_resets")
 }
 
 model VerifyToken {
-  email     String   @id
-  token     String
-  createdAt DateTime @default(now())
+  email      String   @id
+  token      String   @db.VarChar(100)
+  created_at DateTime @default(now())
 
   @@map("verify_tokens")
 }
 
 model Category {
-  id        Int            @id @default(autoincrement())
-  name      String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  posts     CategoryPost[]
+  id         Int            @id @default(autoincrement())
+  slug       String         @unique @db.VarChar(80)
+  name       String         @db.VarChar(50)
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+  posts      CategoryPost[]
 
   @@map("categories")
 }
 
 model Post {
   id          Int            @id @default(autoincrement())
-  title       String
+  title       String         @db.VarChar(180)
+  slug        String         @unique @db.VarChar(200)
   description String
-  authorId    Int
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  author_id   Int
+  created_at  DateTime       @default(now())
+  upated_at   DateTime       @updatedAt
   categories  CategoryPost[]
-  author      User           @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  author      User           @relation(fields: [author_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   media       Media[]
 
   @@map("posts")
 }
 
 model CategoryPost {
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  postId     Int
-  post       Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  post_id     Int
+  post        Post     @relation(fields: [post_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
-  @@id([categoryId, postId])
+  @@id([category_id, post_id])
   @@map("category_post")
 }
 
 model Media {
-  id        Int      @id @default(autoincrement())
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  path      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  post_id    Int
+  post       Post     @relation(fields: [post_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  path       String   @db.VarChar(250)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("media")
 }

@@ -1,6 +1,6 @@
-import { Transform } from "class-transformer";
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsArray } from "class-validator";
-import { IsExists } from "src/libs/class-validator/is-exist";
+import { Transform } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsExists } from 'src/libs/class-validator/is-exist';
 
 export class CreatePostDto {
     @IsNotEmpty()
@@ -18,10 +18,10 @@ export class CreatePostDto {
 
     @IsNotEmpty()
     @IsArray()
-    media: string[]
+    media: string[];
 
     @IsNotEmpty()
     @IsArray()
     @IsExists({ model: 'category', column: 'id' })
-    categories: number[]
+    categories: number[];
 }
