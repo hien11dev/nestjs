@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.sqlite"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  name            String
+  avatar          String
+  email           String    @unique
+  emailVerifiedAt DateTime?
+  password        String
+  active          Boolean
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  posts           Post[]
+
+  @@map("users")
+}
+
+model PasswordReset {
+  email     String   @id
+  token     String
+  createdAt DateTime @default(now())
+
+  @@map("password_resets")
+}
+
+model VerifyToken {
+  email     String   @id
+  token     String
+  createdAt DateTime @default(now())
+
+  @@map("verify_tokens")
+}
+
+model Category {
+  id        Int            @id @default(autoincrement())
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  posts     CategoryPost[]
+
+  @@map("categories")
+}
+
+model Post {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  authorId    Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  categories  CategoryPost[]
+  author      User           @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  media       Media[]
+
+  @@map("posts")
+}
+
+model CategoryPost {
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId     Int
+  post       Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@id([categoryId, postId])
+  @@map("category_post")
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("media")
+}
